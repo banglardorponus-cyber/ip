@@ -1,0 +1,33 @@
+kind = "web"
+previewPath = "/"
+title = "Dainik Jahan IPTV"
+description = "The existing Dainik Jahan IPTV FastAPI platform, preserving its original Bengali-language pages, channel catalogue, player, documentary library, federation flows, and SQLite-backed submissions."
+version = "1.0.0"
+id = "artifacts/dainik-jahan-iptv"
+router = "path"
+
+[[services]]
+name = "web"
+paths = ["/", "/iptv-api"]
+localPort = 23847
+
+[services.development]
+run = "python3 -m uvicorn app.main:app --app-dir artifacts/dainik-jahan-iptv --host 0.0.0.0 --port $PORT"
+
+[services.production]
+
+[services.production.build]
+args = ["python3", "-m", "compileall", "-q", "artifacts/dainik-jahan-iptv/app"]
+
+[services.production.run]
+args = ["python3", "-m", "uvicorn", "app.main:app", "--app-dir", "artifacts/dainik-jahan-iptv", "--host", "0.0.0.0", "--port", "23847"]
+
+[services.production.run.env]
+PORT = "23847"
+
+[services.production.health.startup]
+path = "/iptv-api/health-check"
+
+[services.env]
+PORT = "23847"
+BASE_PATH = "/"
